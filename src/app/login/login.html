@@ -1,0 +1,192 @@
+<div class="min-h-screen bg-gray-100 flex items-center justify-center p-4 sm:p-6 lg:p-8 relative">
+
+      <!-- Message/Status Box -->
+      @if (showMessage()) {
+        <div id="messageBox" 
+             [class]="'fixed top-4 right-4 z-50 p-4 rounded-xl shadow-xl text-white transition-opacity duration-300 min-w-[200px] ' + messageBgColor()"
+        >
+          {{ message() }}
+        </div>
+      }
+      
+      <!-- 3D Background Canvas -->
+      <canvas #threeCanvas id="threeCanvas"></canvas>
+
+      <!-- Authentication Card (Modern Layout) -->
+      <div class="auth-card-wrapper max-w-5xl w-full bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row transform transition-all duration-700">
+          
+          <!-- Left Image Panel Section -->
+          <div class="w-full md:w-5/12 min-h-[250px] md:min-h-[600px] flex items-end relative overflow-hidden">
+            <!-- Image (Placeholder updated to a more abstract visual) -->
+            <img src="https://placehold.co/600x900/223344/b3b3b3?text=Abstract+Visual" 
+                 alt="Abstract technology background" 
+                 class="absolute inset-0 w-full h-full object-cover">
+            
+            <!-- Dark Overlay for Readability -->
+            <div class="absolute inset-0 bg-black opacity-40"></div>
+            
+            <!-- Overlay Text (Relative to image container, sits on top of overlay) -->
+            <div class="p-8 text-white w-full relative z-10 transition-opacity duration-300 backdrop-blur-sm bg-black bg-opacity-30">
+              <h2 class="text-3xl sm:text-4xl font-bold tracking-tight">Access Your Dashboard</h2>
+              <p class="mt-2 text-base font-light opacity-90">Join the community to unlock personalized content and features.</p>
+              <div class="mt-4 flex flex-wrap gap-2 text-sm">
+                  <span class="inline-flex items-center rounded-full bg-white/20 px-3 py-1 font-medium text-white ring-1 ring-inset ring-white/10">Secure Access</span>
+                  <span class="inline-flex items-center rounded-full bg-white/20 px-3 py-1 font-medium text-white ring-1 ring-inset ring-white/10">Real-Time Sync</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Form Section -->
+          <div class="w-full md:w-7/12 p-8 md:p-12 lg:p-16">
+            
+            <div class="text-center mb-10">
+              <p class="text-lg text-gray-800 font-semibold mb-2">Welcome to <span class="text-custom-indigo">lorem.</span></p>
+              <p class="text-sm text-gray-500 max-w-sm mx-auto">Start your journey with us. Lorem ipsum is simply dummy text.</p>
+            </div>
+
+            <!-- Login/Register Tabs -->
+            <div class="flex justify-center space-x-3 mb-8 p-1 bg-gray-100 rounded-xl">
+              <button (click)="toggleMode('login')"
+                [class]="'flex-1 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 ' + (activeTab() === 'login' ? 'bg-custom-indigo shadow-lg text-white' : 'text-gray-600 hover:bg-gray-200')"
+              >
+                Log In
+              </button>
+              <button (click)="toggleMode('register')"
+                [class]="'flex-1 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 ' + (activeTab() === 'register' ? 'bg-custom-indigo shadow-lg text-white' : 'text-gray-600 hover:bg-gray-200')"
+              >
+                Register
+              </button>
+            </div>
+
+            <!-- Conditional Form Rendering -->
+            @if (activeTab() === 'login') {
+              <div id="loginForm" class="space-y-6">
+                <form #loginForm (submit)="onLoginSubmit($event)" class="space-y-6">
+                  
+                  <!-- User Name (Modern Floating Label) -->
+                  <div class="relative pt-4">
+                    <input type="text" id="login-username" name="username" required placeholder=" "
+                           class="peer w-full p-3 border border-gray-300 rounded-xl focus:border-custom-indigo focus:ring-1 focus:ring-custom-indigo transition duration-300 ease-in-out text-base"
+                           #loginUsername
+                    >
+                    <label for="login-username" 
+                           class="absolute left-3 transition-all duration-300 
+                                  peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 
+                                  peer-focus:top-0 peer-focus:p-0 peer-focus:text-custom-indigo peer-valid:top-0 peer-valid:p-0 peer-valid:text-gray-700
+                                  text-sm text-gray-500 bg-white px-1 pointer-events-none"
+                    >
+                      User Name
+                    </label>
+                  </div>
+
+                  <!-- Password (Modern Floating Label) -->
+                  <div class="relative pt-4">
+                    <input type="password" id="login-password" name="password" required placeholder=" "
+                           class="peer w-full p-3 border border-gray-300 rounded-xl focus:border-custom-indigo focus:ring-1 focus:ring-custom-indigo transition duration-300 ease-in-out text-base pr-12"
+                    >
+                    <label for="login-password" 
+                           class="absolute left-3 transition-all duration-300 
+                                  peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 
+                                  peer-focus:top-0 peer-focus:p-0 peer-focus:text-custom-indigo peer-valid:top-0 peer-valid:p-0 peer-valid:text-gray-700
+                                  text-sm text-gray-500 bg-white px-1 pointer-events-none"
+                    >
+                      Password
+                    </label>
+                    <!-- Eye Icon (lucide-eye equivalent SVG) -->
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 cursor-pointer">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </div>
+                  </div>
+
+                  <!-- Checkbox & Forgot Password -->
+                  <div class="flex justify-between items-center text-sm pt-2">
+                    <div class="flex items-center">
+                      <input id="remember-me" name="remember-me" type="checkbox"
+                             class="h-4 w-4 text-custom-indigo border-gray-300 rounded-sm focus:ring-custom-indigo checked:bg-custom-indigo transition duration-150 ease-in-out">
+                      <label for="remember-me" class="ml-2 block text-gray-600 select-none">
+                        Remember me
+                      </label>
+                    </div>
+                    <a href="#" class="font-medium text-gray-500 hover:text-custom-indigo transition duration-150 ease-in-out text-sm">
+                      Forgot Password?
+                    </a>
+                  </div>
+
+                  <!-- Login Button -->
+                  <div class="pt-4">
+                    <button type="submit"
+                            class="w-full py-3 rounded-xl bg-custom-indigo text-white text-lg font-semibold hover:bg-indigo-700 shadow-md shadow-custom-indigo/40 transition-all duration-300 transform hover:scale-[1.005]">
+                      Log In
+                    </button>
+                  </div>
+                </form>
+              </div>
+            } @else {
+              <!-- Register Form -->
+              <div id="registerForm" class="space-y-6">
+                <form #registerForm (submit)="onRegisterSubmit($event)" class="space-y-6">
+                  
+                  <!-- Email Address (Modern Floating Label) -->
+                  <div class="relative pt-4">
+                    <input type="email" id="register-email" name="email" required placeholder=" "
+                           class="peer w-full p-3 border border-gray-300 rounded-xl focus:border-custom-indigo focus:ring-1 focus:ring-custom-indigo transition duration-300 ease-in-out text-base"
+                           #registerEmail
+                    >
+                    <label for="register-email" 
+                           class="absolute left-3 transition-all duration-300 
+                                  peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 
+                                  peer-focus:top-0 peer-focus:p-0 peer-focus:text-custom-indigo peer-valid:top-0 peer-valid:p-0 peer-valid:text-gray-700
+                                  text-sm text-gray-500 bg-white px-1 pointer-events-none"
+                    >
+                      Email Address
+                    </label>
+                  </div>
+                  
+                  <!-- User Name (Modern Floating Label) -->
+                  <div class="relative pt-4">
+                    <input type="text" id="register-username" name="username" required placeholder=" "
+                           class="peer w-full p-3 border border-gray-300 rounded-xl focus:border-custom-indigo focus:ring-1 focus:ring-custom-indigo transition duration-300 ease-in-out text-base"
+                    >
+                    <label for="register-username" 
+                           class="absolute left-3 transition-all duration-300 
+                                  peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 
+                                  peer-focus:top-0 peer-focus:p-0 peer-focus:text-custom-indigo peer-valid:top-0 peer-valid:p-0 peer-valid:text-gray-700
+                                  text-sm text-gray-500 bg-white px-1 pointer-events-none"
+                    >
+                      User Name
+                    </label>
+                  </div>
+
+                  <!-- Password (Modern Floating Label) -->
+                  <div class="relative pt-4">
+                    <input type="password" id="register-password" name="password" required placeholder=" "
+                           class="peer w-full p-3 border border-gray-300 rounded-xl focus:border-custom-indigo focus:ring-1 focus:ring-custom-indigo transition duration-300 ease-in-out text-base pr-12"
+                    >
+                    <label for="register-password" 
+                           class="absolute left-3 transition-all duration-300 
+                                  peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 
+                                  peer-focus:top-0 peer-focus:p-0 peer-focus:text-custom-indigo peer-valid:top-0 peer-valid:p-0 peer-valid:text-gray-700
+                                  text-sm text-gray-500 bg-white px-1 pointer-events-none"
+                    >
+                      Password
+                    </label>
+                    <!-- Eye Icon -->
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 cursor-pointer">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </div>
+                  </div>
+
+                  <!-- Register Button -->
+                  <div class="pt-6">
+                    <button type="submit"
+                            class="w-full py-3 rounded-xl bg-custom-indigo text-white text-lg font-semibold hover:bg-indigo-700 shadow-md shadow-custom-indigo/40 transition-all duration-300 transform hover:scale-[1.005]">
+                      Register
+                    </button>
+                  </div>
+                </form>
+              </div>
+            }
+          </div>
+          
+        </div>
+    </div>
